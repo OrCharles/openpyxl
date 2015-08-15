@@ -48,7 +48,7 @@ from openpyxl.reader.workbook import (
 )
 from openpyxl.workbook.properties import read_properties, DocumentProperties
 from openpyxl.reader.worksheet import read_worksheet
-from openpyxl.reader.comments import read_comments, get_comments_file
+from openpyxl.reader.comments import read_comments, get_comments_file, get_drawings_file
 # Use exc_info for Python 2 compatibility with "except Exception[,/ as] e"
 
 
@@ -238,10 +238,16 @@ def _load_workbook(wb, archive, filename, read_only, keep_vba):
         wb._add_sheet(new_ws)
 
         if not read_only:
-        # load comments into the worksheet cells
+        # load comments and associated shapes into the worksheet cells
             comments_file = get_comments_file(worksheet_path, archive, valid_files)
+            drawings_file = get_drawings_file(worksheet_path, archive, valid_files)
             if comments_file is not None:
-                read_comments(new_ws, archive.read(comments_file))
+                if drawings_file:
+                    read_comments(new_ws, archive.read(comments_file),
+                        archive.read(drawings_file))
+                else:
+                    read_comments(new_ws, archive.read(comments_file))
+
 
     wb._named_ranges = list(read_named_ranges(archive.read(ARC_WORKBOOK), wb))
 

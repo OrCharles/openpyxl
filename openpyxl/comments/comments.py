@@ -2,6 +2,10 @@ from __future__ import absolute_import
 # Copyright (c) 2010-2015 openpyxl
 
 
+default_height = '59.25pt'
+default_width = '108pt'
+
+
 class Comment(object):
     __slots__ = ('_parent',
                  '_text',
@@ -9,12 +13,13 @@ class Comment(object):
                  '_width',
                  '_height')
 
-    def __init__(self, text, author):
+    def __init__(self, text, author, height, width):
         self._text = text
         self._author = author
         self._parent = None
-        self._width = '108pt'
-        self._height = '59.25pt'
+        self._height = height
+        self._width = width
+
 
     @property
     def author(self):
